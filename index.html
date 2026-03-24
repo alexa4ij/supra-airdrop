@@ -53,6 +53,11 @@ button:hover {
     background: #00c3cc;
 }
 
+button:disabled {
+    background: gray;
+    cursor: not-allowed;
+}
+
 .progress {
     width: 100%;
     background: #222;
@@ -71,6 +76,11 @@ button:hover {
     margin-top: 10px;
     color: #aaa;
 }
+
+.status {
+    margin-top: 10px;
+    font-size: 14px;
+}
 </style>
 
 </head>
@@ -82,7 +92,7 @@ button:hover {
 
     <div class="card">
         <input type="text" id="wallet" placeholder="Enter your wallet address">
-        <button onclick="joinAirdrop()">Join Airdrop</button>
+        <button id="joinBtn" onclick="joinAirdrop()">Join Airdrop</button>
 
         <div class="progress">
             <div class="progress-bar"></div>
@@ -92,6 +102,8 @@ button:hover {
         <div class="timer" id="countdown"></div>
 
         <button onclick="claim()">Claim Tokens</button>
+
+        <div class="status" id="status"></div>
     </div>
 </div>
 
@@ -99,7 +111,7 @@ button:hover {
 // countdown
 var countDownDate = new Date().getTime() + (24 * 60 * 60 * 1000);
 
-var x = setInterval(function() {
+setInterval(function() {
     var now = new Date().getTime();
     var distance = countDownDate - now;
 
@@ -110,27 +122,54 @@ var x = setInterval(function() {
     document.getElementById("countdown").innerHTML =
         "Ends in: " + hours + "h " + minutes + "m " + seconds + "s";
 
-    if (distance < 0) {
-        clearInterval(x);
-        document.getElementById("countdown").innerHTML = "Airdrop Ended";
-    }
 }, 1000);
 
-// join
-function joinAirdrop() {
-    let wallet = document.getElementById("wallet").value;
+
+// JOIN AIRDROP (CONNECT KE API)
+async function joinAirdrop() {
+    let wallet = document.getElementById("wallet").value.trim();
+    let btn = document.getElementById("joinBtn");
+    let status = document.getElementById("status");
 
     if(wallet === "") {
-        alert("Enter wallet address!");
+        status.innerHTML = "❌ Wallet address required";
         return;
     }
 
-    alert("Successfully joined airdrop!");
+    btn.disabled = true;
+    btn.innerText = "Processing...";
+    status.innerHTML = "⏳ Sending request...";
+
+    try {
+        const res = await fetch("/api/join", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ wallet })
+        });
+
+        const data = await res.json();
+
+        if(data.success) {
+            status.innerHTML = "✅ Successfully joined airdrop!";
+        } else {
+            status.innerHTML = "❌ Failed: " + data.message;
+        }
+
+    } catch (err) {
+        status.innerHTML = "❌ Server error";
+    }
+
+    btn.disabled = false;
+    btn.innerText = "Join Airdrop";
 }
 
-// claim
+
+// CLAIM (dummy dulu)
 function claim() {
-    alert("Tokens will be distributed soon!");
+    document.getElementById("status").innerHTML =
+        "⚠️ Claim will be available soon!";
 }
 </script>
 
