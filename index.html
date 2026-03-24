@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supra Airdrop</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0c0f1c;
+    color: white;
+    text-align: center;
+}
+
+.container {
+    padding: 40px 20px;
+}
+
+h1 {
+    color: #00f7ff;
+    font-size: 36px;
+}
+
+.card {
+    background: #151933;
+    padding: 25px;
+    border-radius: 15px;
+    max-width: 400px;
+    margin: auto;
+    box-shadow: 0 0 20px rgba(0,255,255,0.2);
+}
+
+input {
+    width: 90%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: none;
+}
+
+button {
+    padding: 12px 20px;
+    background: #00f7ff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #00c3cc;
+}
+
+.progress {
+    width: 100%;
+    background: #222;
+    border-radius: 10px;
+    margin-top: 15px;
+}
+
+.progress-bar {
+    width: 65%;
+    height: 10px;
+    background: #00f7ff;
+    border-radius: 10px;
+}
+
+.timer {
+    margin-top: 10px;
+    color: #aaa;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+    <h1>🚀 Supra Airdrop</h1>
+    <p>Join now and get free SUPRA tokens!</p>
+
+    <div class="card">
+        <input type="text" id="wallet" placeholder="Enter your wallet address">
+        <button onclick="joinAirdrop()">Join Airdrop</button>
+
+        <div class="progress">
+            <div class="progress-bar"></div>
+        </div>
+        <p>65% claimed</p>
+
+        <div class="timer" id="countdown"></div>
+
+        <button onclick="claim()">Claim Tokens</button>
+    </div>
+</div>
+
+<script>
+// countdown
+var countDownDate = new Date().getTime() + (24 * 60 * 60 * 1000);
+
+var x = setInterval(function() {
+    var now = new Date().getTime();
+    var distance = countDownDate - now;
+
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000)) / 1000);
+
+    document.getElementById("countdown").innerHTML =
+        "Ends in: " + hours + "h " + minutes + "m " + seconds + "s";
+
+    if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("countdown").innerHTML = "Airdrop Ended";
+    }
+}, 1000);
+
+// join
+function joinAirdrop() {
+    let wallet = document.getElementById("wallet").value;
+
+    if(wallet === "") {
+        alert("Enter wallet address!");
+        return;
+    }
+
+    alert("Successfully joined airdrop!");
+}
+
+// claim
+function claim() {
+    alert("Tokens will be distributed soon!");
+}
+</script>
+
+</body>
+</html>
