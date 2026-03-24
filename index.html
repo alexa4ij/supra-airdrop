@@ -38,15 +38,18 @@ input {
     margin: 10px 0;
     border-radius: 10px;
     border: none;
+    text-align: center;
 }
 
 button {
     padding: 12px 20px;
+    margin-top: 10px;
     background: #00f7ff;
     border: none;
     border-radius: 10px;
     cursor: pointer;
     font-weight: bold;
+    width: 95%;
 }
 
 button:hover {
@@ -91,24 +94,39 @@ button:disabled {
     <p>Join now and get free SUPRA tokens!</p>
 
     <div class="card">
-        <input type="text" id="wallet" placeholder="Enter your wallet address">
+
+        <!-- CONNECT WALLET -->
+        <button onclick="connectWallet()">🔗 Connect Wallet</button>
+
+        <!-- WALLET INPUT -->
+        <input type="text" id="wallet" placeholder="Wallet address will appear here" readonly>
+
+        <!-- JOIN -->
         <button id="joinBtn" onclick="joinAirdrop()">Join Airdrop</button>
 
+        <!-- PROGRESS -->
         <div class="progress">
             <div class="progress-bar"></div>
         </div>
         <p>65% claimed</p>
 
+        <!-- TIMER -->
         <div class="timer" id="countdown"></div>
 
+        <!-- CLAIM -->
         <button onclick="claim()">Claim Tokens</button>
 
+        <!-- STATUS -->
         <div class="status" id="status"></div>
+
     </div>
 </div>
 
 <script>
-// countdown
+
+// =====================
+// COUNTDOWN
+// =====================
 var countDownDate = new Date().getTime() + (24 * 60 * 60 * 1000);
 
 setInterval(function() {
@@ -125,14 +143,43 @@ setInterval(function() {
 }, 1000);
 
 
-// JOIN AIRDROP (CONNECT KE API)
+// =====================
+// CONNECT WALLET
+// =====================
+async function connectWallet() {
+    let status = document.getElementById("status");
+
+    if (typeof window.ethereum === "undefined") {
+        status.innerHTML = "❌ MetaMask not installed";
+        return;
+    }
+
+    try {
+        const accounts = await window.ethereum.request({
+            method: "eth_requestAccounts"
+        });
+
+        const wallet = accounts[0];
+        document.getElementById("wallet").value = wallet;
+
+        status.innerHTML = "✅ Connected: " + wallet.slice(0,6) + "...";
+
+    } catch (err) {
+        status.innerHTML = "❌ Connection rejected";
+    }
+}
+
+
+// =====================
+// JOIN AIRDROP (API)
+// =====================
 async function joinAirdrop() {
-    let wallet = document.getElementById("wallet").value.trim();
+    let wallet = document.getElementById("wallet").value;
     let btn = document.getElementById("joinBtn");
     let status = document.getElementById("status");
 
     if(wallet === "") {
-        status.innerHTML = "❌ Wallet address required";
+        status.innerHTML = "❌ Connect wallet first";
         return;
     }
 
@@ -152,9 +199,9 @@ async function joinAirdrop() {
         const data = await res.json();
 
         if(data.success) {
-            status.innerHTML = "✅ Successfully joined airdrop!";
+            status.innerHTML = "✅ Joined Airdrop!";
         } else {
-            status.innerHTML = "❌ Failed: " + data.message;
+            status.innerHTML = "❌ " + data.message;
         }
 
     } catch (err) {
@@ -166,11 +213,14 @@ async function joinAirdrop() {
 }
 
 
-// CLAIM (dummy dulu)
+// =====================
+// CLAIM (DUMMY)
+// =====================
 function claim() {
     document.getElementById("status").innerHTML =
-        "⚠️ Claim will be available soon!";
+        "⚠️ Claim feature coming soon!";
 }
+
 </script>
 
 </body>
